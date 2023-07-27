@@ -12,7 +12,7 @@ const app = express();
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect('mongodb://127.0.0.1:27017/bitfilmsdb')
   .then(() => console.log('MongoDB Connected'));
 
 // Routes
