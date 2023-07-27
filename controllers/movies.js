@@ -5,7 +5,7 @@ const NotFoundError = require('../errors/not-found-error');
 const ForbiddenError = require('../errors/forbidden-error');
 
 const getMovies = (req, res, next) => {
-  Movie.find({})
+  Movie.find({ owner: req.user.id })
     .then((movies) => res.send(movies))
     .catch(next);
 };
@@ -20,7 +20,6 @@ const createMovie = (req, res, next) => {
     image,
     trailer,
     thumbnail,
-    movieId,
     nameRU,
     nameEN,
   } = req.body;
@@ -43,8 +42,8 @@ const createMovie = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(
           new BadRequestError(
-            'Переданы некорректные данные при создании фильма.'
-          )
+            'Переданы некорректные данные при создании фильма.',
+          ),
         );
       } else {
         next(err);

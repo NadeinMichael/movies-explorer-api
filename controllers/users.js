@@ -11,13 +11,11 @@ const createUser = (req, res, next) => {
   const { name, email, password } = req.body;
   bcrypt
     .hash(password, 10)
-    .then((hash) =>
-      User.create({
-        name,
-        email,
-        password: hash,
-      })
-    )
+    .then((hash) => User.create({
+      name,
+      email,
+      password: hash,
+    }))
     .then((user) => {
       const { _id } = user;
       res.status(201).send({
@@ -30,8 +28,8 @@ const createUser = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(
           new BadRequestError(
-            'Переданы некорректные данные при создании пользователя.'
-          )
+            'Переданы некорректные данные при создании пользователя.',
+          ),
         );
       } else if (err.name === 'MongoError' && err.code === 11000) {
         next(new ConflictError('Пользователь с таким email уже существует.'));
@@ -56,12 +54,12 @@ const login = (req, res, next) => {
         (error, isPasswordMatch) => {
           if (!isPasswordMatch) {
             return next(
-              new UnauthorizedError('Неправильные почта или пароль.')
+              new UnauthorizedError('Неправильные почта или пароль.'),
             );
           }
           const token = generateToken(user._id);
           return res.status(200).send({ token });
-        }
+        },
       );
     })
     .catch(next);
@@ -89,7 +87,7 @@ const updateUser = (req, res, next) => {
   User.findByIdAndUpdate(
     req.user.id,
     { name: req.body.name, email: req.body.email },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   )
     .then((user) => {
       if (!user) {
@@ -102,8 +100,8 @@ const updateUser = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(
           new BadRequestError(
-            'Переданы некорректные данные при обновлении профиля.'
-          )
+            'Переданы некорректные данные при обновлении профиля.',
+          ),
         );
       } else if (err.name === 'MongoError' && err.code === 11000) {
         next(new ConflictError('Пользователь с таким email уже существует.'));
