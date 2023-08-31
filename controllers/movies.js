@@ -4,40 +4,16 @@ const BadRequestError = require('../errors/bad-request-error');
 const NotFoundError = require('../errors/not-found-error');
 
 const getMovies = (req, res, next) => {
-  Movie.find({ owner: req.user._id })
+  Movie.find({ owner: req.user.id })
     .then((movies) => res.send(movies))
     .catch(next);
 };
 
 const createMovie = (req, res, next) => {
-  const {
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailer,
-    thumbnail,
-    movieId,
-    nameRU,
-    nameEN,
-  } = req.body;
-  const owner = req.user._id;
-  Movie.create({
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailer,
-    thumbnail,
-    owner,
-    movieId,
-    nameRU,
-    nameEN,
-  })
+  const newMovie = req.body;
+  newMovie.owner = req.user.id;
+
+  Movie.create(newMovie)
     .then((movie) => res.send(movie))
     .catch((err) => {
       if (err.name === 'ValidationError') {
