@@ -17,7 +17,7 @@ mongoose
 
 // Routes
 app.use(cors({
-  origin: '*',
+  origin: 'https://tolmachev.diploma.nomoreparties.sbs/',
   credentials: true,
 }));
 app.use(express.json());
