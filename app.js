@@ -16,10 +16,7 @@ mongoose
   .then(() => console.log('MongoDB Connected'));
 
 // Routes
-app.use(cors({
-  origin: 'https://tolmachev.diploma.nomoreparties.sbs/',
-  credentials: true,
-}));
+app.use(cors());
 app.use(express.json());
 app.use(requestLogger);
 app.use('/api', routers);
