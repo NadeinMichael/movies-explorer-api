@@ -16,7 +16,7 @@ const doesUserHavePermission = (req, res, next) => {
   let payload;
 
   try {
-    payload = jwt.verify(token, JWT_SECRET);
+    payload = jwt.verify(token, JWT_SECRET || 'SECRET_KEY');
   } catch (err) {
     return next(new UnauthorizedError('Необходима авторизация2'));
   }
