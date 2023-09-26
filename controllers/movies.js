@@ -2,7 +2,6 @@ const Movie = require('../models/movie');
 
 const BadRequestError = require('../errors/bad-request-error');
 const NotFoundError = require('../errors/not-found-error');
-const ForbiddenError = require('../errors/forbidden-error');
 
 const getMovies = (req, res, next) => {
   Movie.find({ owner: req.user.id })
@@ -11,32 +10,10 @@ const getMovies = (req, res, next) => {
 };
 
 const createMovie = (req, res, next) => {
-  const {
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailer,
-    thumbnail,
-    nameRU,
-    nameEN,
-  } = req.body;
-  const owner = req.user.id;
-  Movie.create({
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailer,
-    thumbnail,
-    owner,
-    nameRU,
-    nameEN,
-  })
+  const newMovie = req.body;
+  newMovie.owner = req.user.id;
+
+  Movie.create(newMovie)
     .then((movie) => res.send(movie))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -53,16 +30,12 @@ const createMovie = (req, res, next) => {
 
 const deleteMovie = (req, res, next) => {
   const { movieId } = req.params;
-  Movie.findById(movieId)
+  Movie.findOne({ movieId })
     .orFail(() => next(new NotFoundError('Фильм с указанным _id не найден'))) // если фильм не найден, то возвращаем ошибку
     .then((movie) => {
-      if (movie.owner.toString() !== req.user.id) {
-        // если id владельца фильма не совпадает с id пользователя, то возвращаем ошибку
-        return next(new ForbiddenError('Нет прав для удаления фильма'));
-      }
-      return movie
+      movie
         .deleteOne() // удаляем фильм
-        .then(() => res.send({ message: 'Фильм удален' }));
+        .then(() => res.send(movie));
     })
     .catch((err) => {
       if (err.name === 'CastError') {

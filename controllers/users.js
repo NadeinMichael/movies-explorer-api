@@ -58,7 +58,7 @@ const login = (req, res, next) => {
             );
           }
           const token = generateToken(user._id);
-          return res.status(200).send({ token });
+          return res.status(200).send({ token, user });
         },
       );
     })
