@@ -12,7 +12,7 @@ const app = express();
 
 // Connect to MongoDB
 mongoose
-  .connect('mongodb://127.0.0.1:27017/bitfilmsdb')
+  .connect('mongodb+srv://nadeinmihail94:sTfZJxBS82W30pYc@cluster0.roxcxnp.mongodb.net/?retryWrites=true&w=majority')
   .then(() => console.log('MongoDB Connected'));
 
 // Routes
